@@ -1,0 +1,36 @@
+
+function prob6(union_flag)
+    f = open("input6.txt","r")
+    lines = split(chomp(read(f,String)),"\n")
+
+    group = Set()
+    total = 0
+    first_in_group = true
+    for line in lines
+        if line == ""
+            #print("group: ", group, " size: ", length(group), "\n")
+            total = total + length(group)
+            group = Set()
+            first_in_group = true
+        else
+            ls = Set(line)
+            if union_flag
+                union!(group, ls)
+            else
+                if first_in_group
+                    group = ls
+                else
+                    intersect!(group, ls)
+                end
+            end
+            first_in_group = false
+        end
+    end
+    if length(group) > 0
+        total = total + length(group)
+    end
+    print("total set sizes ", total, "\n")
+end
+
+prob6(true)
+prob6(false)
