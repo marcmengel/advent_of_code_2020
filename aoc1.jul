@@ -7,22 +7,16 @@ function prob1()
 
     # pairs
     wanted = 2020
-    for i = 1:length(nums)
-        for j = 1:length(nums)
-            if i != j && nums[i] + nums[j] == wanted
-                print("found ", nums[i], " and ", nums[j],  " product ", nums[i]*nums[j],"\n")
-            end
+    for i = 1:length(nums), j = 1:length(nums)
+        if i != j && nums[i] + nums[j] == wanted
+            print("found ", nums[i], " and ", nums[j],  " product ", nums[i]*nums[j],"\n")
         end
     end
 
     # triples
-    for i = 1:length(nums)
-        for j = 1:length(nums)
-            for k = 1:length(nums)
-                if i != j && k != j && nums[i] + nums[j] + nums[k] == wanted
-                    print("found ", nums[i], " and ", nums[j], "and", nums[k], " product ", nums[i]*nums[j]*nums[k],"\n")
-                end
-            end
+    for i = 1:length(nums), j = 1:length(nums), k = 1:length(nums)
+        if i != j && k != j && nums[i] + nums[j] + nums[k] == wanted
+            print("found ", nums[i], " and ", nums[j], "and", nums[k], " product ", nums[i]*nums[j]*nums[k],"\n")
         end
     end
 end
