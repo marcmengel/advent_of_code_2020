@@ -1,0 +1,47 @@
+
+function bp_to_int(s,typ)
+   # get number from boarding pass 
+   # typ == i is id, nothing special to do
+
+   if typ == "c"
+       # column is last 3
+       s = SubString(s,8)
+   end
+   if typ == "r"
+       # row is first 7
+       s = SubString(s,1,7)
+   end
+   s = replace(s, r"B" => s"1")
+   s = replace(s, r"R" => s"1")
+   s = replace(s, r"F" => s"0")
+   s = replace(s, r"L" => s"0")
+   return parse(Int, s, base = 2)
+end
+
+function prob5()
+    f = open("input5.txt","r")
+    ids = map(x -> bp_to_int(x, "i"), split(chomp(read(f,String)),"\n"))
+
+    max_id = 0
+    for id in ids
+        if id > max_id
+            max_id = id
+        end
+    end
+    print("Max id: " , max_id, "\n")
+    ids = sort(ids)
+    #print("sorted: " , ids, "\n")
+    first = true
+    last_id = ids[1]
+    seat = -1
+    for id in ids
+        if id > last_id + 1
+            print("id: ", id, " last_id: ", last_id , "\n")
+            seat = last_id + 1
+            print("Found seat: ", seat  , "\n")
+        end
+        last_id = id
+    end
+end
+
+prob5()
