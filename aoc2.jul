@@ -1,0 +1,57 @@
+#!/usr/bin/env julia
+#
+
+
+function prob2()
+    f = open("aoc_2_input.txt","r")
+    lines = split(chomp(read(f,String)),"\n")
+    close(f)
+
+    valid = 0
+    valid2 = 0
+
+    for l in lines
+        print("line: ", l , "\n")
+        rule,pw = split(l,":")
+        pw = SubString(pw, 2)
+        nums,ch = split(rule," ")
+        l,h = map(x->parse(Int,x),split(nums,"-"))
+        tot = 0
+        for i = 1 : length(pw)
+           # original rule, count ch chars in pw
+           if pw[i] == ch[1]
+               tot = tot + 1
+           end
+        end
+        # original rule, total must be in l..h range
+        if !(l <= tot && tot <= h)
+           print("pw '", pw , "' fails rule ", rule, "\n")
+        else
+           valid=valid+1
+        end
+
+        print("rule2 pw ", pw, " pw[",l,"] ", pw[l], " pw[",h,"] ", pw[h] , "\n")
+        # revised rule, count ch chars in pw only at l or h
+        tot2 = 0
+        if pw[l] == ch[1]
+            print("rule2 char" , l ," ",pw[l] , " matches ", ch,"\n")
+            tot2 = tot2 + 1
+        end
+        if pw[h] == ch[1]
+            print("rule2 char" , h ," ",pw[h] , " matches ", ch,"\n")
+            tot2 = tot2 + 1
+        end
+
+        # revised rule, tot2 must be 1
+        if !(tot2 == 1)
+           print("pw ", pw , " tot2 ", tot2,  " fails rule2 ", rule, "\n")
+        else
+           valid2=valid2+1
+        end
+    end
+    print("valid ", valid, "\n")
+    print("valid2 ", valid2, "\n")
+
+end
+
+prob2()

@@ -1,0 +1,28 @@
+
+function prob3(slope_x, slope_y)
+    f = open("input3.txt","r")
+    lines = split(chomp(read(f,String)),"\n")
+    close(f)
+
+    pos = 0
+    trees = 0
+    slope_y_count = 1
+    for line in lines
+        if slope_y_count > 1
+           slope_y_count = slope_y_count - 1
+           continue
+        end
+        slope_y_count = slope_y
+        if line[pos % length(line) + 1] == "#"[1]
+            trees = trees + 1
+        end
+        pos = pos + slope_x
+    end
+    print("slope: ", slope_y , "/" , slope_x, " trees: " , trees, "\n")
+end
+
+prob3(1,1)
+prob3(3,1)
+prob3(5,1)
+prob3(7,1)
+prob3(1,2)

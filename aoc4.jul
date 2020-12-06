@@ -1,0 +1,115 @@
+
+
+function check_fields(f, e) 
+    # check for duplicates
+    dups = 0
+    for ff in f 
+        for ff2 in f
+            if ff == ff2 
+                dups = dups + 1
+            end
+        end
+    end
+    # discount fields matching themselves
+    dups = dups - length(f)
+
+    matches = 0
+    for ff in f  
+        for ee in e
+            if ff == ee
+                matches = matches  + 1
+            end
+        end
+    end
+    if matches == length(e) && dups == 0 
+        #print("Ok\n")
+        return 1
+    else
+        #print("Fail\n")
+        return 0
+    end
+end
+
+function check_field(fvl)
+    #print("check_field(", fvl, ")")
+    res = imp_check_field(fvl)
+    #print("-> ", res, "\n")
+    return res
+end
+
+function imp_check_field(fvl)
+   if fvl[1] == "byr"
+      n = parse(Int, fvl[2])
+      return n >= 1920 && n <= 2002
+   end
+   if fvl[1] == "iyr"
+      n = parse(Int, fvl[2])
+      return n >= 2010 && n <= 2020
+   end
+   if fvl[1] == "eyr"
+      n = parse(Int, fvl[2])
+      return n >= 2020 && n <= 2030
+   end
+   if fvl[1] == "hgt"
+      m = match( r"^([0-9]+)(in|cm)$", fvl[2])
+      if m == nothing
+          return false
+      else
+          n = parse(Int, m.captures[1])
+          if m.captures[2] == "cm"
+              return n >= 150 && n <= 193
+          else 
+              return  n >= 59 && n <= 76
+          end
+      end
+   end
+   if fvl[1] == "hcl"
+       m = match( r"^#[0-9a-f]{6}$", fvl[2])
+       return m != nothing
+   end
+   if fvl[1] == "ecl"
+       m = match( r"^(amb|blu|brn|gry|grn|hzl|oth)$", fvl[2])
+       return m != nothing
+   end
+   if fvl[1] == "pid"
+       m = match( r"^[0-9]{9}$", fvl[2])
+       return m != nothing
+   end
+   if fvl[1] == "cid"
+       return true
+   end
+   print("unknown field: ", fvl[1])
+   return false
+end
+
+function prob4(do_validate)
+    expecteds = [ "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+    f = open("input4.txt","r")
+    lines = split(chomp(read(f,String)),"\n")
+
+    valid = 0
+    fields = Vector{String}()
+    for line in lines
+        if line == ""
+           valid = valid + check_fields(fields, expecteds)
+           fields = Vector{String}()
+        else
+           fvs = split(line,' ')
+           for fv in fvs
+               fvl = split(fv,':')
+     
+               if !do_validate || check_field(fvl)
+                   fields = push!(fields, fvl[1])
+               end 
+           end
+           #print("line: " , line , " fields: " , fields , "\n")
+        end
+    end
+    if length(fields) > 0
+       valid = valid + check_fields(fields, expecteds)
+    end
+    print("Valid entries: ", valid, "\n")
+end
+
+prob4(false)
+prob4(true)
