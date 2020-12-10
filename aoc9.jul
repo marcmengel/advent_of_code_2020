@@ -1,0 +1,57 @@
+#!/usr/bin/env julia
+
+function find_missing(nums)
+    for curitem = 26:length(nums)
+        prev25 = nums[(curitem-25):(curitem-1)]
+        setprev25 = Set(prev25)
+        found = nothing
+        #print("checking $(curitem)th item $(nums[curitem]) in $setprev25\n")
+        for i = 1:25
+            diff = nums[curitem] - prev25[i] 
+            if diff in setprev25
+               found = i
+            end
+        end
+        if found == nothing
+            print("$(curitem)th item $(nums[curitem]) sum not in $setprev25\n")
+            return nums[curitem]
+        end
+    end
+end
+
+function find_region(nums,nm)
+    lo = 1
+    hi = 1
+    sum = nums[1]
+    while(hi < length(nums))
+       while( sum < nm && hi < length(nums) )
+           hi = hi + 1
+           sum = sum + nums[hi]
+       end
+       if sum == nm
+          return lo, hi
+       end
+       while( sum > nm && lo < hi)
+          sum = sum - nums[lo]
+          lo = lo + 1
+       end
+       if sum == nm
+          return lo, hi
+       end
+    end
+end
+
+function prob9()
+    f = open("input9.txt","r")
+    nums = map(x -> parse(Int,x),split(chomp(read(f,String)),"\n"))
+    close(f)
+
+    nm = find_missing(nums)
+    print("num missing sum: $nm\n")
+    lo,hi = find_region(nums,nm)
+    print("region $lo .. $hi $(nums[lo:hi]) sums to $nm\n")
+    weakness = maximum(nums[lo:hi]) + minimum(nums[lo:hi])
+    print("weakness $weakness\n")
+end
+
+prob9()

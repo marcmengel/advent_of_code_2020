@@ -1,0 +1,58 @@
+
+function prob8()
+    global acc, previnst
+    f = open("input8.txt","r")
+    lines = split(chomp(read(f,String)),"\n")
+    if run(lines)
+        print("exited normally")
+        print("value in acc: ", acc, "\n")
+    else
+        print("jumped from: ", previnst, "\n")
+        print("value in acc: ", acc, "\n")
+    end
+
+    # try to patch it
+    for i = 1:length(lines)
+        if lines[i][1] == 'j' || lines[i][1] == 'n'
+            save = lines[i]
+            if lines[i][1] == 'j'
+                print("j to nop\n")
+                lines[i] = "nop" * SubString(lines[i],4)
+            elseif lines[i][1] == 'n'
+                print("n to jmp\n")
+                lines[i] = "jmp" * SubString(lines[i],4)
+            end
+            print("trying switching line $i from $save to $(lines[i])\n")
+            if run(lines)
+                print("exited normally")
+                print("value in acc: ", acc, "\n")
+                break
+            end
+            lines[i] = save
+        end
+    end
+end
+
+function run(lines)
+    global acc, previnst
+    acc = 0
+    visited = Dict()
+    curinst = 1
+    previnst = 0
+    while(!haskey(visited,curinst) && curinst <= length(lines)) 
+        visited[curinst] = 1
+        previnst = curinst
+        m = match(r"(nop|acc|jmp) ([+-][0-9]*)", lines[curinst])
+        if m.captures[1] == "acc"
+            acc = acc + parse(Int,m.captures[2])
+        end
+        if m.captures[1] == "jmp"
+            curinst = curinst + parse(Int,m.captures[2])
+        else
+            curinst = curinst + 1
+        end
+    end
+    return curinst > length(lines)
+end
+
+prob8()
